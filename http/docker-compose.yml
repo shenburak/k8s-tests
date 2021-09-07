@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  src_1:
+    privileged: true
+    container_name: nginx_1
+    image: nginx_dev_1
+    build:
+      context: .
+      dockerfile: Dockerfile1
+    volumes:
+      - ./:/src
+    ports:
+      - "8081:81"
+  src_2:
+    privileged: true
+    container_name: nginx_2
+    image: nginx_dev_2
+    build:
+      context: .
+      dockerfile: Dockerfile2
+    volumes:
+      - ./:/src
+    ports:
+      - "8082:82"
+  src_3:
+    privileged: true
+    container_name: nginx_3
+    image: nginx_dev_3
+    build:
+      context: .
+      dockerfile: Dockerfile3
+    volumes:
+      - ./:/src
+    ports:
+      - "8083:83"
+
+  

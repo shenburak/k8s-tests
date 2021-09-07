@@ -1,0 +1,43 @@
+FROM ubuntu
+
+RUN apt update
+RUN apt install nginx -y 
+
+
+RUN apt install -y software-properties-common
+RUN apt update
+RUN add-apt-repository ppa:gluster/glusterfs-7
+RUN apt update
+RUN apt install -y glusterfs-server
+
+RUN echo "/usr/sbin/glusterd" >> ~/.bashrc
+
+RUN apt install curl nano -y
+
+COPY ./tutorial_3/index.html /var/www/tutorial/index.html
+COPY ./tutorial_3/tutorial /etc/nginx/sites-enabled
+
+RUN echo 'ip_address_3=( $(ip a | grep "global eth0") ); ip_address_3=${ip_address_3[1]%"/16"};' >> ~/.bashrc
+
+RUN echo 'touch /src/server3.ip' >> ~/.bashrc
+RUN echo 'echo $ip_address_3 > /src/server3.ip' >> ~/.bashrc
+
+RUN echo 'ip_address_1=$(cat /src/server1.ip)' >> ~/.bashrc
+RUN echo 'ip_address_2=$(cat /src/server2.ip)' >> ~/.bashrc
+
+RUN echo 'cp /etc/hosts ~/hosts.new' >> ~/.bashrc
+RUN echo 'sed -i '/server1.shenburak.com/d' ~/hosts.new' >> ~/.bashrc
+RUN echo 'sed -i '/server2.shenburak.com/d' ~/hosts.new' >> ~/.bashrc
+RUN echo 'sed -i '/server3.shenburak.com/d' ~/hosts.new' >> ~/.bashrc
+RUN echo 'sed -i '/gluster1/d' ~/hosts.new' >> ~/.bashrc
+RUN echo 'sed -i '/gluster2/d' ~/hosts.new' >> ~/.bashrc
+RUN echo 'sed -i '/gluster3/d' ~/hosts.new' >> ~/.bashrc
+RUN echo 'cp -f ~/hosts.new /etc/hosts' >> ~/.bashrc
+RUN echo 'echo "$ip_address_1   server1.shenburak.com" >> /etc/hosts; echo "$ip_address_2   server2.shenburak.com" >> /etc/hosts; echo "$ip_address_3   server3.shenburak.com" >> /etc/hosts' >> ~/.bashrc
+RUN echo 'echo "$ip_address_1   gluster1" >> /etc/hosts; echo "$ip_address_2   gluster2" >> /etc/hosts; echo "$ip_address_3   gluster3" >> /etc/hosts' >> ~/.bashrc
+
+WORKDIR /src
+
+CMD [ "tail", "-f", "/dev/null" ]
+
+# 172.21.0.1
